@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>工业计算机机箱组装实训平台</title>
   <style>
+      :root
+ {
+      --primary-color: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --sidebar-width: 260px;
+  }
     * {
       margin: 0;
       padding: 0;
@@ -17,42 +31,52 @@
       padding: 10px;
     }
 
-    /* 顶部导航栏 */
+    /* 顶部导航栏优化 */
     .header {
-      background: #4169E1;
+      background: linear-gradient(90deg, #1e3a8a 0%, #2563eb 100%);
       color: #fff;
-      padding: 12px 20px;
-      border-radius: 8px;
+      padding: 0 24px;
+      height: 64px;
+      border-radius: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
     }
 
     .header h2 {
-      font-size: 22px;
-      font-weight: normal;
+      font-size: 20px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .user-info {
-      font-size: 16px;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 6px 16px;
+      border-radius: 20px;
+      backdrop-filter: blur(4px);
     }
 
-    /* 实训状态条 */
-    .task-status {
-      background: #1e293b;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
+    .task-status
+ {
+      background: #0f172a;
+      color: #94a3b8;
+      padding: 14px 24px;
+      border-radius: 10px;
       display: flex;
       justify-content: space-between;
-      font-size: 15px;
-      margin-bottom: 12px;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 16px;
+      border-left: 4px solid var(--warning);
     }
 
-    .task-status span {
-      margin-right: 22px;
+    .task-status b { color: #fff; margin-right: 20px; font-weight: 500; }
+    .status-highlight { color: var(--success);
     }
 
     /* 左侧竖菜单 + 主内容布局 */
@@ -88,17 +112,20 @@
       margin-bottom: 16px;
     }
 
-    .menu-item {
+    .menu-item
+ {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 14px 16px;
+      padding: 12px 14px;
       border-radius: 8px;
       cursor: pointer;
-      margin-bottom: 10px;
-      color: #374151;
-      font-size: 17px;
+      margin-bottom: 6px;
+      color: var(--text-main);
+      font-size: 15px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
 
     .menu-item.active {
       background: #4169E1;
@@ -124,43 +151,32 @@
       color: #4169E1;
     }
 
-    /* 主容器布局 */
-    .container {
-      flex: 1;
-      display: flex;
-      gap: 12px;
-    }
+    /* 主内容区优化 */
+    .container { flex: 1; display: flex; gap: 16px; }
+    .left { width: 58%; display: flex; flex-direction: column; gap: 16px; }
+    .right { width: 42%; background: var(--bg-card); border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-color); overflow-y: auto;}
 
-    /* 左侧区域 */
-    .left {
-      width: 55%;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    /* 右侧区域 */
-    .right {
-      width: 45%;
-      background: white;
-      border-radius: 8px;
-      padding: 18px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    }
-
-    /* 视频监控区 */
-    .video-panel {
+   /* 视频监控区优化 */
+   /* 视频监控区优化 */
+    .video-panel
+ {
       background: #000;
-      height: 62%;
-      border-radius: 8px;
+      height: 45%;
+      border-radius: 12px;
       position: relative;
       overflow: hidden;
+      border: 2px solid #334155;
     }
 
-    .video-panel img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .video-panel img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+
+    .ai-frame
+ {
+      position: absolute;
+      border: 2px solid #00ff00;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+      background: rgba(0, 255, 0, 0.05);
+      border-radius: 4px;
     }
 
     /* AI识别框 */
@@ -172,14 +188,203 @@
 
     .ai-1 { top: 28%; left: 24%; width: 23%; height: 36%; }
     .ai-2 { top: 20%; left: 56%; width: 19%; height: 26%; }
+/* 模拟扫描线动画 */
+    .video-panel::after
+ {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 2px;
+      background: rgba(0, 255, 0, 0.3);
+      animation: scan 3s linear infinite;
+    }
 
-    /* 辅助实训区 */
-    .assist-panel {
-      background: white;
-      height: 38%;
+
+    /* 辅助面板优化 */
+    .assist-panel
+ {
+      background: var(--bg-card);
+      flex: 1;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .assist-panel-split {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .mini-video-panel {
+      background: #000;
+      height: 120px;
       border-radius: 8px;
-      padding: 16px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #334155;
+    }
+
+    .mini-video-panel img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+
+    .mini-robot-dog {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border-radius: 8px;
+      padding: 12px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .mini-robot-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .mini-robot-title {
+      font-size: 13px;
+      font-weight: bold;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mini-robot-status {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #4ade80;
+      font-size: 11px;
+    }
+
+    .mini-robot-status-dot {
+      width: 6px;
+      height: 6px;
+      background: #4ade80;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .mini-robot-content {
+      display: flex;
+      gap: 10px;
+      height: calc(100% - 35px);
+    }
+
+    .mini-robot-canvas {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mini-robot-svg {
+      width: 100%;
+      max-width: 160px;
+      max-height: 90px;
+    }
+
+    .mini-robot-info {
+      width: 100px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      padding: 8px;
+      overflow: hidden;
+    }
+
+    .mini-joint-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .mini-joint-item {
+      display: flex;
+      align-items: center;
+      padding: 4px 6px;
+      margin-bottom: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      border-left: 2px solid #4169E1;
+    }
+
+    .mini-joint-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #4169E1, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 9px;
+      margin-right: 6px;
+    }
+
+    .mini-joint-name {
+      font-size: 10px;
+      color: white;
+      flex: 1;
+    }
+
+    .mini-joint-value {
+      font-size: 9px;
+      color: #4ade80;
+      font-family: monospace;
+    }
+
+    .mini-robot-controls {
+      display: flex;
+      gap: 4px;
+      margin-top: 8px;
+    }
+
+    .mini-control-btn {
+      flex: 1;
+      padding: 5px 6px;
+      border: none;
+      border-radius: 4px;
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: white;
+    }
+
+    .btn-walk { background: linear-gradient(135deg, #4169E1, #6366f1); }
+    .btn-sit { background: linear-gradient(135deg, #198754, #22c55e); }
+    .btn-stand { background: linear-gradient(135deg, #fd7e14, #f59e0b); }
+    .btn-jump { background: linear-gradient(135deg, #dc2626, #ef4444); }
+
+    .mini-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .mini-stat-item {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 6px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .mini-stat-value {
+      font-size: 12px;
+      font-weight: bold;
+      color: #4ade80;
+      margin-bottom: 2px;
+    }
+
+    .mini-stat-label {
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.6);
     }
 
     .panel-title {
@@ -555,6 +760,480 @@
       border-radius: 6px;
       margin-top: 8px;
     }
+
+    /* ========== 3D组装演示弹窗 ========== */
+    .model3d-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+
+    .model3d-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 1000px;
+      max-height: 90vh;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 1001;
+      overflow: hidden;
+    }
+
+    .model3d-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, #4169E1 0%, #6366f1 100%);
+      color: white;
+    }
+
+    .model3d-header h3 {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .model3d-close-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 4px 12px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .model3d-close-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .model3d-content {
+      display: flex;
+      height: calc(90vh - 60px);
+    }
+
+    .model3d-canvas {
+      flex: 1;
+      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .model3d-viewer {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .model3d-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .model3d-placeholder svg {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 20px;
+    }
+
+    .model3d-info {
+      width: 320px;
+      background: #f8f9fa;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .model3d-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .model3d-part-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .model3d-part-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      margin-bottom: 8px;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 4px solid #ddd;
+    }
+
+    .model3d-part-item:hover {
+      background: #e3f2fd;
+      border-left-color: #4169E1;
+    }
+
+    .model3d-part-item.active {
+      background: #e3f2fd;
+      border-left-color: #4169E1;
+    }
+
+    .model3d-part-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #4169E1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      margin-right: 12px;
+    }
+
+    .model3d-part-name {
+      font-size: 15px;
+      color: #333;
+    }
+
+    .model3d-controls {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #eee;
+    }
+
+    .model3d-controls h4 {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    .model3d-control-btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 8px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .control-play {
+      background: #198754;
+      color: white;
+    }
+
+    .control-play:hover {
+      background: #157347;
+    }
+
+    .control-pause {
+      background: #fd7e14;
+      color: white;
+    }
+
+    .control-pause:hover {
+      background: #f59e0b;
+    }
+
+    .control-reset {
+      background: #6c757d;
+      color: white;
+    }
+
+    .control-reset:hover {
+      background: #5c636a;
+    }
+
+    .model3d-progress {
+      margin-top: 16px;
+    }
+
+    .model3d-progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .model3d-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4169E1, #6366f1);
+      border-radius: 4px;
+      transition: width 0.3s;
+    }
+
+    .model3d-progress-text {
+      font-size: 13px;
+      color: #666;
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    /* ========== 3D机械狗展示区域 ========== */
+    .robot-dog-section {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .robot-dog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .robot-dog-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .robot-dog-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #4ade80;
+      font-size: 14px;
+    }
+
+    .robot-dog-status-dot {
+      width: 8px;
+      height: 8px;
+      background: #4ade80;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .robot-dog-container {
+      display: flex;
+      gap: 24px;
+      height: 400px;
+    }
+
+    .robot-dog-canvas {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .robot-dog-svg {
+      width: 100%;
+      height: 100%;
+      max-width: 500px;
+      max-height: 350px;
+    }
+
+    .robot-dog-info {
+      width: 350px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .robot-dog-info-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .joint-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .joint-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      border-left: 3px solid #4169E1;
+      transition: all 0.3s;
+    }
+
+    .joint-item:hover {
+      background: rgba(65, 105, 225, 0.2);
+      transform: translateX(4px);
+    }
+
+    .joint-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #4169E1, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 13px;
+      margin-right: 12px;
+    }
+
+    .joint-name {
+      font-size: 14px;
+      color: white;
+      flex: 1;
+    }
+
+    .joint-value {
+      font-size: 12px;
+      color: #4ade80;
+      font-family: monospace;
+    }
+
+    .robot-dog-controls {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .control-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .control-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: white;
+    }
+
+    .control-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .control-btn.active {
+      box-shadow: 0 0 0 2px white;
+    }
+
+    .btn-walk { background: linear-gradient(135deg, #4169E1, #6366f1); }
+    .btn-sit { background: linear-gradient(135deg, #198754, #22c55e); }
+    .btn-stand { background: linear-gradient(135deg, #fd7e14, #f59e0b); }
+    .btn-jump { background: linear-gradient(135deg, #dc2626, #ef4444); }
+    .btn-reset { background: linear-gradient(135deg, #6c757d, #9ca3af); }
+
+    .robot-dog-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .stat-item {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #4ade80;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* 机械狗动画 */
+    .dog-body {
+      animation: dogIdle 2s ease-in-out infinite;
+    }
+
+    @keyframes dogIdle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .dog-leg {
+      transform-origin: top center;
+    }
+
+    .dog-leg.front-left {
+      animation: legMove 1s ease-in-out infinite;
+    }
+
+    .dog-leg.front-right {
+      animation: legMove 1s ease-in-out infinite 0.5s;
+    }
+
+    .dog-leg.back-left {
+      animation: legMove 1s ease-in-out infinite 0.5s;
+    }
+
+    .dog-leg.back-right {
+      animation: legMove 1s ease-in-out infinite;
+    }
+
+    @keyframes legMove {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+
+    .dog-tail {
+      transform-origin: left center;
+      animation: tailWag 0.5s ease-in-out infinite;
+    }
+
+    @keyframes tailWag {
+      0%, 100% { transform: rotate(-10deg); }
+      50% { transform: rotate(10deg); }
+    }
   </style>
 </head>
 
@@ -610,7 +1289,7 @@
       </div>
 
       <div class="menu-section">
-        <div class="menu-section-title">系统联调测试模块</div>
+        <div class="module-title">系统联调测试模块</div>
         <div class="menu-item" onclick="showPage('normal')">
           <div class="num-badge">1</div>
           <span>整机静态平衡测试</span>
@@ -638,21 +1317,138 @@
     <div class="container" id="normalPage">
       <div class="left">
         <div class="video-panel">
-          <img src="https://p11-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/cdde833f9b95462884c1151785919392.png" alt="实训实时视频">
-          <div class="ai-frame ai-1"></div>
-          <div class="ai-frame ai-2"></div>
+          <img src="https://p11-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/cdde833f9b95462884c1151785919392.png" alt="监控">
+          <div class="ai-frame" style="top: 28%; left: 24%; width: 23%; height: 36%;"></div>
+          <div class="ai-frame" style="top: 20%; left: 56%; width: 19%; height: 26%;"></div>
+          <div style="position:absolute; bottom:10px; left:10px; color:#00ff00; font-family:monospace; font-size:12px; background:rgba(0,0,0,0.5); padding:4px;">
+            CAM_01 / AI_RECOGNITION_ACTIVE / 60FPS
+          </div>
         </div>
 
         <div class="assist-panel">
           <div class="panel-title">辅助实训区</div>
           <div class="btn-group">
-            <button class="btn btn-primary">3D组装演示</button>
             <button class="btn btn-primary">历史操作回放</button>
             <button class="btn btn-warning">异常情况上报</button>
           </div>
-          <div class="assist-tip">
-            当前正在执行：步骤4 — 安装硬盘<br>
-            AI视觉实时识别中，系统自动校验操作规范性
+
+          <!-- 缩小版机械狗 -->
+          <div class="mini-robot-dog">
+            <div class="mini-robot-header">
+              <div class="mini-robot-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                四足机器人
+              </div>
+              <div class="mini-robot-status">
+                <div class="mini-robot-status-dot"></div>
+                <span>在线</span>
+              </div>
+            </div>
+
+            <div class="mini-robot-content">
+              <div class="mini-robot-canvas">
+                <svg class="mini-robot-svg robot-dog-svg" viewBox="0 0 400 300">
+                  <defs>
+                    <linearGradient id="miniBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#4169E1"/>
+                      <stop offset="100%" style="stop-color:#6366f1"/>
+                    </linearGradient>
+                    <linearGradient id="miniLegGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#6366f1"/>
+                      <stop offset="100%" style="stop-color:#8b5cf6"/>
+                    </linearGradient>
+                    <filter id="miniGlow">
+                      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                      <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                  </defs>
+
+                  <g class="dog-body" filter="url(#miniGlow)">
+                    <rect x="140" y="120" width="120" height="60" rx="15" fill="url(#miniBodyGrad)"/>
+                    <rect x="250" y="100" width="50" height="40" rx="10" fill="url(#miniBodyGrad)"/>
+                    <circle cx="265" cy="115" r="4" fill="#4ade80"/>
+                    <circle cx="280" cy="115" r="4" fill="#4ade80"/>
+                    <rect x="255" y="90" width="8" height="15" rx="2" fill="url(#miniBodyGrad)"/>
+                    <rect x="285" y="90" width="8" height="15" rx="2" fill="url(#miniBodyGrad)"/>
+                    <g class="dog-tail">
+                      <rect x="130" y="130" width="30" height="8" rx="4" fill="url(#miniLegGrad)"/>
+                    </g>
+                  </g>
+
+                  <g class="dog-leg front-left">
+                    <rect x="150" y="180" width="12" height="50" rx="4" fill="url(#miniLegGrad)"/>
+                    <rect x="148" y="230" width="16" height="25" rx="4" fill="url(#miniLegGrad)"/>
+                  </g>
+                  <g class="dog-leg front-right">
+                    <rect x="180" y="180" width="12" height="50" rx="4" fill="url(#miniLegGrad)"/>
+                    <rect x="178" y="230" width="16" height="25" rx="4" fill="url(#miniLegGrad)"/>
+                  </g>
+                  <g class="dog-leg back-left">
+                    <rect x="220" y="180" width="12" height="50" rx="4" fill="url(#miniLegGrad)"/>
+                    <rect x="218" y="230" width="16" height="25" rx="4" fill="url(#miniLegGrad)"/>
+                  </g>
+                  <g class="dog-leg back-right">
+                    <rect x="250" y="180" width="12" height="50" rx="4" fill="url(#miniLegGrad)"/>
+                    <rect x="248" y="230" width="16" height="25" rx="4" fill="url(#miniLegGrad)"/>
+                  </g>
+
+                  <circle cx="156" cy="180" r="6" fill="#4ade80" opacity="0.8"/>
+                  <circle cx="186" cy="180" r="6" fill="#4ade80" opacity="0.8"/>
+                  <circle cx="226" cy="180" r="6" fill="#4ade80" opacity="0.8"/>
+                  <circle cx="256" cy="180" r="6" fill="#4ade80" opacity="0.8"/>
+                </svg>
+              </div>
+
+              <div class="mini-robot-info">
+                <ul class="mini-joint-list">
+                  <li class="mini-joint-item">
+                    <div class="mini-joint-icon">FL</div>
+                    <span class="mini-joint-name">左前</span>
+                    <span class="mini-joint-value" id="miniFL">0.00°</span>
+                  </li>
+                  <li class="mini-joint-item">
+                    <div class="mini-joint-icon">FR</div>
+                    <span class="mini-joint-name">右前</span>
+                    <span class="mini-joint-value" id="miniFR">0.00°</span>
+                  </li>
+                  <li class="mini-joint-item">
+                    <div class="mini-joint-icon">BL</div>
+                    <span class="mini-joint-name">左后</span>
+                    <span class="mini-joint-value" id="miniBL">0.00°</span>
+                  </li>
+                  <li class="mini-joint-item">
+                    <div class="mini-joint-icon">BR</div>
+                    <span class="mini-joint-name">右后</span>
+                    <span class="mini-joint-value" id="miniBR">0.00°</span>
+                  </li>
+                </ul>
+
+                <div class="mini-robot-controls">
+                  <button class="mini-control-btn btn-walk" onclick="setDogAction('walk')">走</button>
+                  <button class="mini-control-btn btn-sit" onclick="setDogAction('sit')">坐</button>
+                </div>
+                <div class="mini-robot-controls">
+                  <button class="mini-control-btn btn-stand" onclick="setDogAction('stand')">站</button>
+                  <button class="mini-control-btn btn-jump" onclick="setDogAction('jump')">跳</button>
+                </div>
+
+                <div class="mini-stats">
+                  <div class="mini-stat-item">
+                    <div class="mini-stat-value" id="miniBat">85%</div>
+                    <div class="mini-stat-label">电量</div>
+                  </div>
+                  <div class="mini-stat-item">
+                    <div class="mini-stat-value" id="miniTemp">42°C</div>
+                    <div class="mini-stat-label">温度</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -781,6 +1577,172 @@
     </div>
   </div>
 
+  <!-- 3D机械狗展示区域 -->
+  <div class="robot-dog-section" style="display:none;">
+    <div class="robot-dog-header">
+      <div class="robot-dog-title">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+        四足机器人 - 机械狗结构展示
+      </div>
+      <div class="robot-dog-status">
+        <div class="robot-dog-status-dot"></div>
+        <span>在线运行中</span>
+      </div>
+    </div>
+
+    <div class="robot-dog-container">
+      <div class="robot-dog-canvas">
+        <svg class="robot-dog-svg" viewBox="0 0 400 300">
+          <defs>
+            <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#4169E1"/>
+              <stop offset="100%" style="stop-color:#6366f1"/>
+            </linearGradient>
+            <linearGradient id="legGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#6366f1"/>
+              <stop offset="100%" style="stop-color:#8b5cf6"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- 机械狗主体 -->
+          <g class="dog-body" filter="url(#glow)">
+            <!-- 身体 -->
+            <rect x="140" y="120" width="120" height="60" rx="15" fill="url(#bodyGrad)"/>
+
+            <!-- 头部 -->
+            <rect x="250" y="100" width="50" height="40" rx="10" fill="url(#bodyGrad)"/>
+
+            <!-- 眼睛 -->
+            <circle cx="265" cy="115" r="4" fill="#4ade80"/>
+            <circle cx="280" cy="115" r="4" fill="#4ade80"/>
+
+            <!-- 耳朵 -->
+            <rect x="255" y="90" width="8" height="15" rx="2" fill="url(#bodyGrad)"/>
+            <rect x="285" y="90" width="8" height="15" rx="2" fill="url(#bodyGrad)"/>
+
+            <!-- 尾巴 -->
+            <g class="dog-tail">
+              <rect x="130" y="130" width="30" height="8" rx="4" fill="url(#legGrad)"/>
+            </g>
+          </g>
+
+          <!-- 四条腿 -->
+          <g class="dog-leg front-left">
+            <rect x="150" y="180" width="12" height="50" rx="4" fill="url(#legGrad)"/>
+            <rect x="148" y="230" width="16" height="25" rx="4" fill="url(#legGrad)"/>
+          </g>
+
+          <g class="dog-leg front-right">
+            <rect x="180" y="180" width="12" height="50" rx="4" fill="url(#legGrad)"/>
+            <rect x="178" y="230" width="16" height="25" rx="4" fill="url(#legGrad)"/>
+          </g>
+
+          <g class="dog-leg back-left">
+            <rect x="220" y="180" width="12" height="50" rx="4" fill="url(#legGrad)"/>
+            <rect x="218" y="230" width="16" height="25" rx="4" fill="url(#legGrad)"/>
+          </g>
+
+          <g class="dog-leg back-right">
+            <rect x="250" y="180" width="12" height="50" rx="4" fill="url(#legGrad)"/>
+            <rect x="248" y="230" width="16" height="25" rx="4" fill="url(#legGrad)"/>
+          </g>
+
+          <!-- 关节连接点 -->
+          <circle cx="156" cy="180" r="6" fill="#4ade80" opacity="0.8"/>
+          <circle cx="186" cy="180" r="6" fill="#4ade80" opacity="0.8"/>
+          <circle cx="226" cy="180" r="6" fill="#4ade80" opacity="0.8"/>
+          <circle cx="256" cy="180" r="6" fill="#4ade80" opacity="0.8"/>
+
+          <!-- 关节编号 -->
+          <text x="156" y="184" font-size="8" fill="white" text-anchor="middle">FL</text>
+          <text x="186" y="184" font-size="8" fill="white" text-anchor="middle">FR</text>
+          <text x="226" y="184" font-size="8" fill="white" text-anchor="middle">BL</text>
+          <text x="256" y="184" font-size="8" fill="white" text-anchor="middle">BR</text>
+
+          <!-- 地面 -->
+          <rect x="50" y="270" width="300" height="5" rx="2" fill="rgba(255,255,255,0.2)"/>
+          <line x1="50" y1="275" x2="350" y2="275" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        </svg>
+      </div>
+
+      <div class="robot-dog-info">
+        <div class="robot-dog-info-title">🔧 关节状态</div>
+        <ul class="joint-list">
+          <li class="joint-item">
+            <div class="joint-icon">FL</div>
+            <span class="joint-name">左前腿</span>
+            <span class="joint-value">0.00°</span>
+          </li>
+          <li class="joint-item">
+            <div class="joint-icon">FR</div>
+            <span class="joint-name">右前腿</span>
+            <span class="joint-value">0.00°</span>
+          </li>
+          <li class="joint-item">
+            <div class="joint-icon">BL</div>
+            <span class="joint-name">左后腿</span>
+            <span class="joint-value">0.00°</span>
+          </li>
+          <li class="joint-item">
+            <div class="joint-icon">BR</div>
+            <span class="joint-name">右后腿</span>
+            <span class="joint-value">0.00°</span>
+          </li>
+          <li class="joint-item">
+            <div class="joint-icon">H</div>
+            <span class="joint-name">头部关节</span>
+            <span class="joint-value">0.00°</span>
+          </li>
+          <li class="joint-item">
+            <div class="joint-icon">T</div>
+            <span class="joint-name">尾部关节</span>
+            <span class="joint-value">0.00°</span>
+          </li>
+        </ul>
+
+        <div class="robot-dog-controls">
+          <div class="control-row">
+            <button class="control-btn btn-walk" onclick="setDogAction('walk')">行走</button>
+            <button class="control-btn btn-sit" onclick="setDogAction('sit')">坐下</button>
+          </div>
+          <div class="control-row">
+            <button class="control-btn btn-stand" onclick="setDogAction('stand')">站立</button>
+            <button class="control-btn btn-jump" onclick="setDogAction('jump')">跳跃</button>
+          </div>
+          <button class="control-btn btn-reset" onclick="setDogAction('reset')">↺ 重置姿态</button>
+        </div>
+
+        <div class="robot-dog-stats">
+          <div class="stat-item">
+            <div class="stat-value" id="batteryValue">85%</div>
+            <div class="stat-label">电池电量</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="tempValue">42°C</div>
+            <div class="stat-label">核心温度</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="speedValue">0.5m/s</div>
+            <div class="stat-label">移动速度</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="loadValue">12kg</div>
+            <div class="stat-label">负载重量</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 实训手册弹窗 -->
   <div class="manual-overlay" id="manualOverlay"></div>
   <div class="manual-modal" id="manualModal">
@@ -846,16 +1808,118 @@
     </div>
   </div>
 
+  <!-- 3D组装演示弹窗 -->
+  <div class="model3d-overlay" id="model3dOverlay" onclick="closeModel3d()"></div>
+  <div class="model3d-modal" id="model3dModal">
+    <div class="model3d-header">
+      <h3>🔧 3D组装演示</h3>
+      <button class="model3d-close-btn" onclick="closeModel3d()">×</button>
+    </div>
+    <div class="model3d-content">
+      <div class="model3d-canvas">
+        <div class="model3d-viewer">
+          <div class="model3d-placeholder">
+            <svg viewBox="0 0 100 100" fill="currentColor">
+              <rect x="15" y="25" width="70" height="50" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>
+              <rect x="20" y="30" width="20" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="50" y="30" width="20" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="25" y="50" width="50" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="15" y1="25" x2="15" y2="75" stroke="currentColor" stroke-width="2"/>
+              <line x1="85" y1="25" x2="85" y2="75" stroke="currentColor" stroke-width="2"/>
+              <circle cx="50" cy="50" r="8" fill="none" stroke="currentColor" stroke-width="2"/>
+              <line x1="42" y1="50" x2="58" y2="50" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="50" y1="42" x2="50" y2="58" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            <div style="font-size: 18px; margin-bottom: 8px;">机箱3D模型</div>
+            <div style="font-size: 14px; opacity: 0.6;">点击右侧部件列表查看组装演示</div>
+          </div>
+          <!-- 3D旋转动画效果 -->
+          <div id="model3d-animation" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; display: none;">
+            <svg viewBox="0 0 200 200" style="animation: rotate 8s linear infinite;">
+              <defs>
+                <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#4169E1"/>
+                  <stop offset="100%" style="stop-color:#6366f1"/>
+                </linearGradient>
+              </defs>
+              <rect x="30" y="50" width="140" height="100" rx="8" fill="url(#grad)" opacity="0.8"/>
+              <rect x="40" y="60" width="50" height="30" rx="4" fill="white" opacity="0.3"/>
+              <rect x="110" y="60" width="50" height="30" rx="4" fill="white" opacity="0.3"/>
+              <rect x="50" y="100" width="100" height="30" rx="4" fill="white" opacity="0.2"/>
+              <circle cx="100" cy="100" r="20" fill="white" opacity="0.1"/>
+            </svg>
+            <style>
+              @keyframes rotate {
+                from { transform: rotateY(0deg); }
+                to { transform: rotateY(360deg); }
+              }
+            </style>
+          </div>
+        </div>
+      </div>
+      <div class="model3d-info">
+        <div class="model3d-title">💻 组装部件</div>
+        <ul class="model3d-part-list">
+          <li class="model3d-part-item" onclick="selectPart(this, 'case')">
+            <div class="model3d-part-icon">1</div>
+            <span class="model3d-part-name">机箱外壳</span>
+          </li>
+          <li class="model3d-part-item" onclick="selectPart(this, 'psu')">
+            <div class="model3d-part-icon">2</div>
+            <span class="model3d-part-name">电源模块</span>
+          </li>
+          <li class="model3d-part-item" onclick="selectPart(this, 'motherboard')">
+            <div class="model3d-part-icon">3</div>
+            <span class="model3d-part-name">主板</span>
+          </li>
+          <li class="model3d-part-item" onclick="selectPart(this, 'cpu')">
+            <div class="model3d-part-icon">4</div>
+            <span class="model3d-part-name">CPU处理器</span>
+          </li>
+          <li class="model3d-part-item" onclick="selectPart(this, 'ram')">
+            <div class="model3d-part-icon">5</div>
+            <span class="model3d-part-name">内存条</span>
+          </li>
+          <li class="model3d-part-item" onclick="selectPart(this, 'hdd')">
+            <div class="model3d-part-icon">6</div>
+            <span class="model3d-part-name">硬盘</span>
+          </li>
+          <li class="model3d-part-item" onclick="selectPart(this, 'gpu')">
+            <div class="model3d-part-icon">7</div>
+            <span class="model3d-part-name">显卡</span>
+          </li>
+          <li class="model3d-part-item" onclick="selectPart(this, 'cables')">
+            <div class="model3d-part-icon">8</div>
+            <span class="model3d-part-name">连接线材</span>
+          </li>
+        </ul>
+
+        <div class="model3d-controls">
+          <h4>播放控制</h4>
+          <button class="model3d-control-btn control-play" onclick="playAnimation()">▶ 播放演示</button>
+          <button class="model3d-control-btn control-pause" onclick="pauseAnimation()">⏸ 暂停演示</button>
+          <button class="model3d-control-btn control-reset" onclick="resetAnimation()">↺ 重置演示</button>
+        </div>
+
+        <div class="model3d-progress">
+          <div class="model3d-progress-bar">
+            <div class="model3d-progress-fill" id="model3dProgressFill" style="width: 37.5%;"></div>
+          </div>
+          <div class="model3d-progress-text" id="model3dProgressText">当前进度：4/8 (37.5%)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
 
 
-    // 菜单点击：只高亮当前点击项
-    function selectMenu(el) {
-      document.querySelectorAll('.menu-item').forEach(item => {
-        item.classList.remove('active');
-      });
-      el.classList.add('active');
-    }
+    // 更新菜单选中状态
+      const items = document.querySelectorAll('.menu-item');
+      items.forEach(item => item.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+
 
     // 切换页面
     function showPage(type) {
@@ -908,6 +1972,226 @@
       modal.style.transform = 'none';
     }
     function stopDrag() { isDragging = false; }
+
+    // 完整版3D组装演示相关函数
+    let animationInterval = null;
+    let currentStep = 4;
+    const totalSteps = 8;
+    const partNames = ['机箱外壳', '电源模块', '主板', 'CPU处理器', '内存条', '硬盘', '显卡', '连接线材'];
+
+    function openModel3d() {
+      document.getElementById('model3dOverlay').style.display = 'block';
+      document.getElementById('model3dModal').style.display = 'block';
+    }
+
+    function closeModel3d() {
+      document.getElementById('model3dOverlay').style.display = 'none';
+      document.getElementById('model3dModal').style.display = 'none';
+      pauseAnimation();
+    }
+
+    function selectPart(el, partId) {
+      document.querySelectorAll('.model3d-part-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      el.classList.add('active');
+      const index = Array.from(el.parentElement.children).indexOf(el);
+      currentStep = index + 1;
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const progress = (currentStep / totalSteps) * 100;
+      document.getElementById('model3dProgressFill').style.width = progress + '%';
+      document.getElementById('model3dProgressText').textContent =
+        `当前进度：${currentStep}/${totalSteps} (${Math.round(progress)}%)`;
+    }
+
+    function playAnimation() {
+      if (animationInterval) return;
+      document.querySelector('.model3d-placeholder').style.display = 'none';
+      document.getElementById('model3d-animation').style.display = 'block';
+      animationInterval = setInterval(() => {
+        if (currentStep < totalSteps) {
+          currentStep++;
+          updateProgress();
+          document.querySelectorAll('.model3d-part-item')[currentStep - 1].classList.add('active');
+        } else {
+          pauseAnimation();
+        }
+      }, 2000);
+    }
+
+    function pauseAnimation() {
+      if (animationInterval) {
+        clearInterval(animationInterval);
+        animationInterval = null;
+      }
+    }
+
+    function resetAnimation() {
+      pauseAnimation();
+      currentStep = 0;
+      document.querySelectorAll('.model3d-part-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      updateProgress();
+      document.getElementById('model3d-animation').style.display = 'none';
+      document.querySelector('.model3d-placeholder').style.display = 'flex';
+    }
+
+    // 机械狗控制函数
+    let dogActionInterval = null;
+    let currentDogAction = 'idle';
+
+    function setDogAction(action) {
+      document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.mini-control-btn').forEach(btn => btn.classList.remove('active'));
+
+      const body = document.querySelector('.dog-body');
+      const legs = document.querySelectorAll('.dog-leg');
+      const tail = document.querySelector('.dog-tail');
+
+      if (dogActionInterval) {
+        clearInterval(dogActionInterval);
+        dogActionInterval = null;
+      }
+
+      switch(action) {
+        case 'walk':
+          document.querySelector('.btn-walk')?.classList.add('active');
+          document.querySelectorAll('.btn-walk').forEach(b => b.classList.add('active'));
+          currentDogAction = 'walk';
+          body.style.animation = 'dogIdle 0.5s ease-in-out infinite';
+          legs.forEach((leg, index) => {
+            leg.style.animation = `legMove 0.3s ease-in-out infinite ${index * 0.15}s`;
+          });
+          document.getElementById('speedValue').textContent = '1.2m/s';
+          document.getElementById('miniBat').textContent = '82%';
+          document.getElementById('miniTemp').textContent = '45°C';
+          updateJointValues();
+          break;
+
+        case 'sit':
+          document.querySelector('.btn-sit')?.classList.add('active');
+          document.querySelectorAll('.btn-sit').forEach(b => b.classList.add('active'));
+          currentDogAction = 'sit';
+          body.style.animation = 'none';
+          body.style.transform = 'translateY(20px)';
+          legs.forEach((leg, index) => {
+            leg.style.animation = 'none';
+            if (index < 2) {
+              leg.style.transform = 'rotate(-30deg)';
+            } else {
+              leg.style.transform = 'rotate(30deg)';
+            }
+          });
+          document.getElementById('speedValue').textContent = '0m/s';
+          document.getElementById('miniBat').textContent = '80%';
+          document.getElementById('miniTemp').textContent = '40°C';
+          resetJointValues();
+          break;
+
+        case 'stand':
+          document.querySelector('.btn-stand')?.classList.add('active');
+          document.querySelectorAll('.btn-stand').forEach(b => b.classList.add('active'));
+          currentDogAction = 'stand';
+          body.style.animation = 'none';
+          body.style.transform = 'translateY(0)';
+          legs.forEach(leg => {
+            leg.style.animation = 'none';
+            leg.style.transform = 'rotate(0deg)';
+          });
+          document.getElementById('speedValue').textContent = '0m/s';
+          document.getElementById('miniBat').textContent = '78%';
+          document.getElementById('miniTemp').textContent = '38°C';
+          resetJointValues();
+          break;
+
+        case 'jump':
+          document.querySelector('.btn-jump')?.classList.add('active');
+          document.querySelectorAll('.btn-jump').forEach(b => b.classList.add('active'));
+          currentDogAction = 'jump';
+          body.style.animation = 'dogJump 0.6s ease-in-out infinite';
+          legs.forEach(leg => {
+            leg.style.animation = 'none';
+            leg.style.transform = 'rotate(-15deg)';
+          });
+          document.getElementById('speedValue').textContent = '2.5m/s';
+          document.getElementById('miniBat').textContent = '75%';
+          document.getElementById('miniTemp').textContent = '50°C';
+          updateJointValues();
+          break;
+
+        case 'reset':
+          document.querySelector('.btn-reset')?.classList.add('active');
+          document.querySelectorAll('.btn-reset').forEach(b => b.classList.add('active'));
+          currentDogAction = 'idle';
+          body.style.animation = 'dogIdle 2s ease-in-out infinite';
+          body.style.transform = 'translateY(0)';
+          legs.forEach((leg, index) => {
+            leg.style.animation = `legMove 1s ease-in-out infinite ${index % 2 === 0 ? 0 : 0.5}s`;
+            leg.style.transform = 'rotate(0deg)';
+          });
+          document.getElementById('speedValue').textContent = '0.5m/s';
+          document.getElementById('miniBat').textContent = '85%';
+          document.getElementById('miniTemp').textContent = '42°C';
+          resetJointValues();
+          break;
+      }
+    }
+
+    function updateJointValues() {
+      const jointValues = document.querySelectorAll('.joint-value');
+      const miniJointIds = ['miniFL', 'miniFR', 'miniBL', 'miniBR'];
+      dogActionInterval = setInterval(() => {
+        jointValues.forEach((el, index) => {
+          const baseAngle = (Math.random() - 0.5) * 30;
+          el.textContent = baseAngle.toFixed(2) + '°';
+        });
+        miniJointIds.forEach((id, index) => {
+          const el = document.getElementById(id);
+          if (el) {
+            const baseAngle = (Math.random() - 0.5) * 30;
+            el.textContent = baseAngle.toFixed(2) + '°';
+          }
+        });
+      }, 500);
+    }
+
+    function resetJointValues() {
+      const jointValues = document.querySelectorAll('.joint-value');
+      const miniJointIds = ['miniFL', 'miniFR', 'miniBL', 'miniBR'];
+      jointValues.forEach(el => {
+        el.textContent = '0.00°';
+      });
+      miniJointIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.textContent = '0.00°';
+        }
+      });
+    }
+
+    // 添加跳跃动画
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes dogJump {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-30px); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // 实时更新机械狗状态数据
+    setInterval(() => {
+      if (currentDogAction === 'walk' || currentDogAction === 'jump') {
+        const battery = Math.max(0, 85 - Math.random() * 2);
+        const temp = Math.min(60, 42 + Math.random() * 5);
+        document.getElementById('batteryValue').textContent = battery.toFixed(0) + '%';
+        document.getElementById('tempValue').textContent = temp.toFixed(0) + '°C';
+      }
+    }, 3000);
   </script>
 </body>
 </html>
