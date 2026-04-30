@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>工业计算机机箱组装实训平台</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+    }
+
+    body {
+      background-color: #f5f7fa;
+      padding: 10px;
+    }
+
+    /* 顶部导航栏 */
+    .header {
+      background: #4169E1;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .header h2 {
+      font-size: 18px;
+      font-weight: normal;
+    }
+
+    .user-info {
+      font-size: 14px;
+    }
+
+    /* 实训状态条 */
+    .task-status {
+      background: #1e293b;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .task-status span {
+      margin-right: 22px;
+    }
+
+    /* 左侧竖菜单 + 主内容布局 */
+    .layout-container {
+      display: flex;
+      gap: 12px;
+      height: calc(100vh - 160px);
+    }
+
+    .sidebar {
+      width: 220px;
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      overflow-y: auto;
+    }
+
+    .module-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #4b5563;
+      margin-bottom: 20px;
+    }
+
+    .menu-section {
+      margin-bottom: 30px;
+    }
+
+    .menu-section-title {
+      font-size: 16px;
+      color: #6b7280;
+      margin-bottom: 15px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 8px;
+      color: #374151;
+      font-size: 16px;
+    }
+
+    .menu-item.active {
+      background: #4169E1;
+      color: white;
+      box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
+    }
+
+    .menu-item .num-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #e0f2fe;
+      color: #4169E1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .menu-item.active .num-badge {
+      background: white;
+      color: #4169E1;
+    }
+
+    /* 主容器布局 */
+    .container {
+      flex: 1;
+      display: flex;
+      gap: 12px;
+    }
+
+    /* 左侧区域 */
+    .left {
+      width: 55%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* 右侧区域 */
+    .right {
+      width: 45%;
+      background: white;
+      border-radius: 8px;
+      padding: 18px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    /* 视频监控区 */
+    .video-panel {
+      background: #000;
+      height: 62%;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .video-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* AI识别框 */
+    .ai-frame {
+      position: absolute;
+      border: 2px solid #00ff00;
+      border-radius: 4px;
+    }
+
+    .ai-1 { top: 28%; left: 24%; width: 23%; height: 36%; }
+    .ai-2 { top: 20%; left: 56%; width: 19%; height: 26%; }
+
+    /* 辅助实训区 */
+    .assist-panel {
+      background: white;
+      height: 38%;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 14px;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .btn {
+      padding: 9px 15px;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-primary { background: #4169E1; }
+    .btn-warning { background: #fd7e14; }
+    .btn-success { background: #198754; }
+    .btn-default { background: #6c757d; }
+
+    .btn:hover { opacity: 0.9; }
+
+    .assist-tip {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    /* SOP步骤列表 */
+    .sop-title {
+      font-size: 17px;
+      font-weight: bold;
+      color: #222;
+      margin-bottom: 16px;
+    }
+
+    .step {
+      padding: 12px;
+      border-left: 4px solid #ccc;
+      background: #f9f9f9;
+      margin-bottom: 8px;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .step-done {
+      border-left-color: #198754;
+      background: #e8f5e9;
+    }
+
+    .step-current {
+      border-left-color: #4169E1;
+      background: #e3f2fd;
+    }
+
+    .step-name {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .step-result {
+      font-size: 12px;
+      color: #4169E1;
+    }
+
+    /* 底部操作按钮 */
+    .operation {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+    }
+
+    /* 关节驱动测试专用样式 */
+    .joint-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #f9fafc;
+      border-radius: 8px;
+      padding: 16px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .main-title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .main-title-bar h3 {
+      font-size: 18px;
+      color: #333;
+    }
+
+    .download-btn {
+      padding: 6px 14px;
+      background: #e9ecef;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .col-left {
+      width: 35%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .col-right {
+      width: 65%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .video-placeholder {
+      height: 180px;
+      background: #f5f7fa;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    .btn-block {
+      width: 100%;
+      background: #4169E1;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    th, td {
+      border: 1px solid #eee;
+      padding: 6px;
+      text-align: center;
+    }
+
+    th {
+      background: #f9fafc;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .chart-card {
+      background: white;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .chart-card h4 {
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: 80px;
+    }
+
+    .log-box, .error-box {
+      background: #f9fafc;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    /* 实训手册按钮 */
+    .manual-btn {
+      background: #198754;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .manual-btn:hover {
+      background: #157347;
+    }
+
+    /* ========== 实训手册弹窗（可拖动、非模态） ========== */
+    .manual-overlay {
+      display: none;
+    }
+
+    .manual-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      max-height: 85vh;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 1000;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .manual-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      border-bottom: 1px solid #eee;
+      background: #f8f9fa;
+      cursor: move;
+    }
+
+    .manual-header h3 {
+      font-size: 18px;
+      color: #333;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .close-btn:hover { color: #000; }
+
+    .manual-content {
+      padding: 20px;
+      overflow-y: auto;
+      max-height: calc(85vh - 60px);
+    }
+
+    .task-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .task-tab {
+      width: 45px;
+      height: 45px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: white;
+    }
+
+    .task-tab.active {
+      background: #4169E1;
+      color: white;
+      border-color: #4169E1;
+    }
+
+    .sop-section {
+      margin-bottom: 20px;
+    }
+
+    .sop-section-title {
+      font-weight: bold;
+      color: #4169E1;
+      margin-bottom: 8px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sop-section-content {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #333;
+      white-space: pre-wrap;
+    }
+
+    .img-section img {
+      width: 100%;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 顶部系统栏 -->
+  <div class="header">
+    <h2>联想教育实训平台</h2>
+    <div style="display:flex; align-items:center; gap:15px;">
+      <div class="user-info">学生：联想小新 | 班级：计算机2401 | 实训中</div>
+      <button class="manual-btn" onclick="openManual()">📖 实训手册</button>
+    </div>
+  </div>
+
+  <!-- 任务状态条 -->
+  <div class="task-status">
+    <div>
+      <span>工业检测平台</span>
+      <span>实训耗时：00:14:22</span>
+      <span>告警：0</span>
+    </div>
+    <div>
+      <span>总进度：45%</span>
+      <span>工位号：03</span>
+    </div>
+  </div>
+
+  <!-- 主体内容（含左侧菜单） -->
+  <div class="layout-container">
+    <!-- 左侧竖菜单 -->
+    <div class="sidebar">
+      <div class="menu-section">
+        <div class="module-title">单机测试模块</div>
+        <div class="menu-item" onclick="showPage('normal')">
+          <div class="num-badge">1</div>
+          <span>上电前安全检查</span>
+        </div>
+        <div class="menu-item active" onclick="showPage('normal')">
+          <div class="num-badge">2</div>
+          <span>视觉防呆检测</span>
+        </div>
+        <div class="menu-item" onclick="showPage('joint')">
+          <div class="num-badge">3</div>
+          <span>关节驱动测试</span>
+        </div>
+        <div class="menu-item" onclick="showPage('normal')">
+          <div class="num-badge">4</div>
+          <span>传感器测试</span>
+        </div>
+        <div class="menu-item" onclick="showPage('normal')">
+          <div class="num-badge">5</div>
+          <span>头部灯板/充电桩测试</span>
+        </div>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-section-title">系统联调测试模块</div>
+        <div class="menu-item" onclick="showPage('normal')">
+          <div class="num-badge">1</div>
+          <span>整机静态平衡测试</span>
+        </div>
+        <div class="menu-item" onclick="showPage('normal')">
+          <div class="num-badge">2</div>
+          <span>基础步态测试</span>
+        </div>
+        <div class="menu-item" onclick="showPage('normal')">
+          <div class="num-badge">3</div>
+          <span>动态步态测试</span>
+        </div>
+        <div class="menu-item" onclick="showPage('normal')">
+          <div class="num-badge">4</div>
+          <span>环境适应测试</span>
+        </div>
+        <div class="menu-item" onclick="showPage('normal')">
+          <div class="num-badge">5</div>
+          <span>负载与续航测试</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 正常界面（视觉防呆检测） -->
+    <div class="container" id="normalPage">
+      <div class="left">
+        <div class="video-panel">
+          <img src="https://p11-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/cdde833f9b95462884c1151785919392.png" alt="实训实时视频">
+          <div class="ai-frame ai-1"></div>
+          <div class="ai-frame ai-2"></div>
+        </div>
+
+        <div class="assist-panel">
+          <div class="panel-title">辅助实训区</div>
+          <div class="btn-group">
+            <button class="btn btn-primary">3D组装演示</button>
+            <button class="btn btn-primary">历史操作回放</button>
+            <button class="btn btn-warning">异常情况上报</button>
+          </div>
+          <div class="assist-tip">
+            当前正在执行：步骤4 — 安装硬盘<br>
+            AI视觉实时识别中，系统自动校验操作规范性
+          </div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="sop-title">SOP标准操作程序</div>
+
+        <div class="step step-done">
+          <div class="step-name">步骤1：开箱检查机箱外观</div>
+          <div class="step-result">已通过 AI 校验（99.2%）</div>
+        </div>
+        <div class="step step-done">
+          <div class="step-name">步骤2：安装电源模块</div>
+          <div class="step-result">已通过 AI 校验（97.8%）</div>
+        </div>
+        <div class="step step-done">
+          <div class="step-name">步骤3：固定主板铜柱</div>
+          <div class="step-result">已通过 AI 校验（98.1%）</div>
+        </div>
+        <div class="step step-current">
+          <div class="step-name">步骤4：安装硬盘（当前操作）</div>
+          <div class="step-result">AI校验通过率：92.5%</div>
+        </div>
+        <div class="step">
+          <div class="step-name">步骤5：安装内存条</div>
+        </div>
+        <div class="step">
+          <div class="step-name">步骤6：连接电源线</div>
+        </div>
+        <div class="step">
+          <div class="step-name">步骤7：整理机箱内部线材</div>
+        </div>
+        <div class="step">
+          <div class="step-name">步骤8：合上机箱盖板并锁紧</div>
+        </div>
+        <div class="step">
+          <div class="step-name">步骤9：通电测试与功能验证</div>
+        </div>
+
+        <div class="operation">
+          <button class="btn btn-success">确认当前步骤完成(AI校验)</button>
+          <button class="btn btn-default">下一步</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 关节驱动测试界面 -->
+    <div class="joint-container" id="jointPage">
+      <div class="main-title-bar">
+        <h3>关节驱动测试</h3>
+        <button class="download-btn">下使能</button>
+      </div>
+
+      <div class="row">
+        <div class="col-left">
+          <div class="card">
+            <div class="card-header"><span>⧉ 实时视频画面</span><span>⤢</span></div>
+            <div class="video-placeholder">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2"><path d="M23 7l-7 5-5-5-5 5-7-5v13h24V7z"></path></svg>
+              <div style="margin-top:8px">实训台顶部摄像头</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span>关节测试参数</span></div>
+            <div class="form-group"><label>关节测试类型</label><select class="form-control"><option>PVQ Target</option></select></div>
+            <div class="form-row">
+              <div class="form-group" style="width:48%"><label>转动幅度</label><input type="text" class="form-control" value="0.1"></div>
+              <div class="form-group" style="width:48%"><label>转动周期</label><input type="text" class="form-control" value="2"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group" style="width:23%"><label>kp</label><input type="text" class="form-control" value="1"></div>
+              <div class="form-group" style="width:23%"><label>kd</label><input type="text" class="form-control" value="1"></div>
+              <div class="form-group" style="width:23%"><label>前馈力</label><input type="text" class="form-control" value="1"></div>
+              <div class="form-group" style="width:23%"><label>转矩补偿</label><input type="text" class="form-control" value="1"></div>
+            </div>
+            <button class="btn-block">保存测试参数</button>
+          </div>
+
+          <div class="card"><div class="card-header"><span>日志信息</span></div><div class="log-box">[09:23:15] 系统初始化完成<br>[09:23:16] 等待连接设备...<br>[09:23:20] 设备连接成功</div></div>
+          <div class="card"><div class="card-header"><span>错误信息</span></div><div class="error-box">[错误1] 错误详细描述</div></div>
+        </div>
+
+        <div class="col-right">
+          <div class="card">
+            <div class="card-header"><span>电机/轮子选择</span><span style="font-size:12px;"><input type="checkbox"> 全选</span></div>
+            <div class="checkbox-group">
+              <div class="checkbox-item"><input type="checkbox" checked> 电机0</div>
+              <div class="checkbox-item"><input type="checkbox"> 电机1</div>
+              <div class="checkbox-item"><input type="checkbox"> 电机2</div>
+              <div class="checkbox-item"><input type="checkbox" checked> 电机3</div>
+              <div class="checkbox-item"><input type="checkbox"> 电机4</div>
+              <div class="checkbox-item"><input type="checkbox"> 电机5</div>
+              <div class="checkbox-item"><input type="checkbox" checked> 电机6</div>
+              <div class="checkbox-item"><input type="checkbox"> 电机7</div>
+              <div class="checkbox-item"><input type="checkbox"> 电机8</div>
+              <div class="checkbox-item"><input type="checkbox"> 电机9</div>
+              <div class="checkbox-item"><input type="checkbox" checked> 电机10</div>
+              <div class="checkbox-item"><input type="checkbox"> 电机11</div>
+              <div class="checkbox-item"><input type="checkbox"> 轮子1</div>
+              <div class="checkbox-item"><input type="checkbox"> 轮子2</div>
+              <div class="checkbox-item"><input type="checkbox"> 轮子3</div>
+              <div class="checkbox-item"><input type="checkbox"> 轮子4</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span>电机数据</span></div>
+            <table>
+              <tr><th></th><th>电机0</th><th>电机1</th><th>电机2</th><th>电机3</th><th>电机4</th><th>电机5</th></tr>
+              <tr><td>位置</td><td>0.59425512</td><td>0.46512644</td><td>-0.90928530</td><td>-0.22306212</td><td>-0.61404323</td><td>-0.56255649</td></tr>
+              <tr><td>速度</td><td>-2.1050441</td><td>0.2187290</td><td>-3.5932112</td><td>2.7097538</td><td>-7.5937956</td><td>-3.4919073</td></tr>
+              <tr><td>力矩</td><td>-0.42180860</td><td>0.40785551</td><td>-7.70791938</td><td>-6.81427035</td><td>2.85334112</td><td>4.16309481</td></tr>
+              <tr><td>温度</td><td>-5.4510137</td><td>-8.6566208</td><td>0.5894204</td><td>7.8848394</td><td>-0.9490639</td><td>4.3823747</td></tr>
+            </table>
+          </div>
+
+          <div class="chart-grid">
+            <div class="chart-card"><h4>位置</h4><svg class="chart-svg" viewBox="0 0 200 80"><polyline points="20,40 40,35 60,30 80,32 100,38 120,42 140,38 160,30 180,35" fill="none" stroke="#d93025" stroke-width="1.5"/></svg></div>
+            <div class="chart-card"><h4>速度</h4><svg class="chart-svg" viewBox="0 0 200 80"><polyline points="20,40 40,35 60,30 80,32 100,38 120,42 140,38 160,30 180,35" fill="none" stroke="#d93025" stroke-width="1.5"/></svg></div>
+            <div class="chart-card"><h4>力矩</h4><svg class="chart-svg" viewBox="0 0 200 80"><polyline points="20,40 40,35 60,30 80,32 100,38 120,42 140,38 160,30 180,35" fill="none" stroke="#d93025" stroke-width="1.5"/></svg></div>
+            <div class="chart-card"><h4>温度</h4><svg class="chart-svg" viewBox="0 0 200 80"><polyline points="20,40 40,35 60,30 80,32 100,38 120,42 140,38 160,30 180,35" fill="none" stroke="#d93025" stroke-width="1.5"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 实训手册弹窗 -->
+  <div class="manual-overlay" id="manualOverlay"></div>
+  <div class="manual-modal" id="manualModal">
+    <div class="manual-header" id="manualHeader">
+      <h3>SOP 指南</h3>
+      <button class="close-btn" onclick="closeManual()">×</button>
+    </div>
+    <div class="manual-content">
+      <div class="task-tabs">
+        <div class="task-tab active" onclick="switchTask(1)">01</div>
+        <div class="task-tab" onclick="switchTask(2)">02</div>
+        <div class="task-tab" onclick="switchTask(3)">03</div>
+        <div class="task-tab" onclick="switchTask(4)">04</div>
+        <div class="task-tab" onclick="switchTask(5)">05</div>
+        <div class="task-tab" onclick="switchTask(6)">06</div>
+        <div class="task-tab" onclick="switchTask(7)">07</div>
+        <div class="task-tab" onclick="switchTask(8)">08</div>
+        <div class="task-tab" onclick="switchTask(9)">09</div>
+        <div class="task-tab" onclick="switchTask(10)">10</div>
+        <div class="task-tab" onclick="switchTask(11)">11</div>
+        <div class="task-tab" onclick="switchTask(12)">12</div>
+      </div>
+
+      <div id="task1Content">
+        <div class="sop-section">
+          <div class="sop-section-title">☰ 任务名称</div>
+          <div class="sop-section-content">任务 1：产线安全规范与 5S 工位整理</div>
+        </div>
+        <div class="sop-section">
+          <div class="sop-section-title">✓ 任务目标</div>
+          <div class="sop-section-content">掌握产线级安全规范，能识别并规避机器人实训中的典型安全风险；
+掌握 5S 管理标准，能独立完成实训工位的整理、整顿、清扫、清洁、素养落地；
+建立工业级标准化作业习惯，适配具身智能装配/运维工程师岗位职业素养要求。</div>
+        </div>
+        <div class="sop-section">
+          <div class="sop-section-title">✓ 前置条件</div>
+          <div class="sop-section-content">实训台已断电，急停按钮处于按下锁定状态；
+工具、物料、线缆均已从工位移除，处于初始状态；
+学生已完成实训安全培训，佩戴防静电手套、护目镜。</div>
+        </div>
+        <div class="sop-section">
+          <div class="sop-section-title">☰ 操作步骤</div>
+          <div class="sop-section-content">步骤1：检查急停按钮状态，确认已按下并锁定；
+步骤2：检查实训台电源开关，确认处于关闭位置；
+步骤3：清理工位区域，移除所有非必要物品；
+步骤4：按照5S标准整理工具摆放区域；
+步骤5：检查防静电装备佩戴情况；
+步骤6：填写工位状态检查表。</div>
+        </div>
+        <div class="sop-section">
+          <div class="sop-section-title">✓ 考核标准</div>
+          <div class="sop-section-content">1. 急停按钮锁定状态正确（20分）；
+2. 工位清理彻底，无杂物遗留（20分）；
+3. 工具摆放规范有序（20分）；
+4. 防静电装备佩戴正确（20分）；
+5. 检查表填写完整准确（20分）。</div>
+        </div>
+        <div class="sop-section img-section">
+          <div class="sop-section-title">🖼️ 部件图示</div>
+          <img src="https://img.freepik.com/free-vector/industrial-safety-concept_52683-27495.jpg" alt="部件图示">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+
+    // 菜单点击：只高亮当前点击项
+    function selectMenu(el) {
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      el.classList.add('active');
+    }
+
+    // 切换页面
+    function showPage(type) {
+      const normal = document.getElementById('normalPage');
+      const joint = document.getElementById('jointPage');
+
+      if (type === 'normal') {
+        normal.style.display = 'flex';
+        joint.style.display = 'none';
+      } else {
+        normal.style.display = 'none';
+        joint.style.display = 'flex';
+      }
+
+      // 菜单高亮
+      document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+    }
+
+    // 打开/关闭手册
+    function openManual() { document.getElementById('manualModal').style.display = 'block'; }
+    function closeManual() { document.getElementById('manualModal').style.display = 'none'; }
+// 修复：切换任务的函数
+    function switchTask(num) {
+      // 高亮当前点击的标签
+      document.querySelectorAll('.task-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.task-tab')[num - 1].classList.add('active');
+      // 这里可以后续扩展：根据num切换不同任务的SOP内容
+      alert('切换到任务 ' + num);
+    }
+    // 拖动窗口
+    const header = document.getElementById('manualHeader');
+    const modal = document.getElementById('manualModal');
+    let isDragging = false, startX, startY, initialX, initialY;
+    header.addEventListener('mousedown', startDrag);
+    function startDrag(e) {
+      e.preventDefault(); startX = e.clientX; startY = e.clientY;
+      initialX = modal.getBoundingClientRect().left;
+      initialY = modal.getBoundingClientRect().top;
+      isDragging = true;
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('mouseup', stopDrag);
+    }
+    function drag(e) {
+      if (!isDragging) return; e.preventDefault();
+      modal.style.left = initialX + e.clientX - startX + 'px';
+      modal.style.top = initialY + e.clientY - startY + 'px';
+      modal.style.transform = 'none';
+    }
+    function stopDrag() { isDragging = false; }
+  </script>
+</body>
+</html>
